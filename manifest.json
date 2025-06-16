@@ -7,7 +7,7 @@
     "css": "style.css",
     "author": "404nyaFound",
     "version": "1.0.1",
-    "homePage": "",
+    "homePage": "https://github.com/404nyaFound",
     "auto_update": true,
     "assets": [
         "/assets/default/true.mp3",
