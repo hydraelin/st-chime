@@ -1,0 +1,16 @@
+{
+    "display_name": "更多提醒铃声",
+    "loading_order": 100,
+    "requires": [],
+    "optional": [],
+    "js": "index.js",
+    "css": "style.css",
+    "author": "404nyaFound",
+    "version": "1.0.1",
+    "homePage": "",
+    "auto_update": true,
+    "assets": [
+        "/assets/default/true.mp3",
+        "/assets/doubao/true.mp3"
+    ]
+}
