@@ -106,17 +106,6 @@ const createSettingsUI = () => {
     removeCustomAudio($(this).closest(".chime-audio-item").data("id"));
   });
 
-  // 抽屉交互
-  const header = $(".inline-drawer-header");
-  const content = $(".inline-drawer-content");
-  const icon = $(".inline-drawer-icon");
-  header.on("click", () => {
-    content.slideToggle(200);
-    icon.toggleClass("down up");
-  });
-  content.hide();
-};
-
 // 请求音频权限
 const requestAudioPermission = async () => {
   if (hasAudioPermission) return true;
