@@ -45,12 +45,12 @@ const ChimePlugin = {
   // 创建设置界面（类名全部添加chime-前缀）
   createSettingsUI() {
     const container = $(`
-      <div class="chime-inline-drawer">
-        <div class="chime-inline-drawer-toggle chime-inline-drawer-header">
+      <div class="inline-drawer">
+        <div class="inline-drawer-toggle inline-drawer-header">
           <b>更多提醒铃声</b>
-          <div class="chime-inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+          <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
         </div>
-        <div class="chime-inline-drawer-content">
+        <div class="inline-drawer-content">
           <div class="chime-toggle-container">
             <label class="chime-toggle-label" for="chime_enabled">
               <input id="chime_enabled" type="checkbox" class="chime-toggle-checkbox">

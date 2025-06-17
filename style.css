@@ -13,44 +13,6 @@
   --chime-error: #ef4444;
 }
 
-/* 主容器（添加明确前缀） */
-.chime-inline-drawer {
-  margin: 0;
-  padding: 0;
-  border-radius: 0.5rem;
-  background-color: var(--chime-bg-dark);
-  color: var(--chime-text-primary);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-}
-
-.chime-inline-drawer-toggle,
-.chime-inline-drawer-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.5rem;
-  cursor: pointer;
-}
-
-.chime-inline-drawer-icon {
-  transition: transform 0.3s;
-}
-
-.chime-inline-drawer-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease-out;
-}
-
-.chime-inline-drawer.active .chime-inline-drawer-content {
-  max-height: 500px;
-  transition: max-height 0.3s ease-in;
-}
-
-.chime-inline-drawer.active .chime-inline-drawer-icon {
-  transform: rotate(180deg);
-}
-
 /* 开关切换 */
 .chime-toggle-container {
   margin-bottom: 0.5rem;
