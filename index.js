@@ -105,6 +105,7 @@ const createSettingsUI = () => {
   $(".chime-remove-button").on("click", function() {
     removeCustomAudio($(this).closest(".chime-audio-item").data("id"));
   });
+};
 
 // 请求音频权限
 const requestAudioPermission = async () => {
