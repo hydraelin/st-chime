@@ -3,7 +3,6 @@ import { saveSettingsDebounced, eventSource, event_types } from "../../../../scr
 // 命名空间封装，避免全局污染
 const ChimePlugin = {
   STORAGE_KEY: "chime_settings",
-  path: `scripts/extensions/third-party/st-chime`,
   
   // 状态管理（封装在命名空间内）
   state: {
@@ -20,8 +19,8 @@ const ChimePlugin = {
   
   // 铃声配置
   CHIME_CONFIG: {
-    default: `${this.path}/assets/default/true.mp3`,
-    doubao: `${this.path}/assets/doubao/true.mp3`,
+    default: `scripts/extensions/third-party/st-chime/assets/default/true.mp3`,
+    doubao: `scripts/extensions/third-party/st-chime/assets/doubao/true.mp3`,
   },
   
   // 初始化设置
