@@ -1,10 +1,9 @@
 import { saveSettingsDebounced, eventSource, event_types } from "../../../../script.js";
 
-// 命名空间封装，避免全局污染
 const ChimePlugin = {
   STORAGE_KEY: "chime_settings",
+  PERMISSION_KEY: "chime_audio_permission",
   
-  // 状态管理（封装在命名空间内）
   state: {
     chimeEnabled: new Set(),
     chimeSelect: "default",
@@ -12,37 +11,38 @@ const ChimePlugin = {
     audioContext: null,
     hasAudioPermission: false,
     customChimes: [],
-    isUserInteracted: false,
     pendingPlayPromise: null,
-    audioElement: null
+    audioElement: null,
+    initializedPermission: false
   },
   
-  // 铃声配置
   CHIME_CONFIG: {
     default: `scripts/extensions/third-party/st-chime/assets/default/true.mp3`,
     doubao: `scripts/extensions/third-party/st-chime/assets/doubao/true.mp3`,
   },
   
-  // 初始化设置
   initSettings() {
     const settings = localStorage.getItem(this.STORAGE_KEY);
     if (settings) {
       const parsed = JSON.parse(settings);
-      this.state.chimeEnabled = new Set(parsed.chimeEnabled);
-      this.state.chimeSelect = parsed.chimeSelect || "default";
-      this.state.chimeVolume = parsed.chimeVolume || 1.0;
-      this.state.customChimes = parsed.customChimes || [];
+      this.state = {
+        ...this.state,
+        chimeEnabled: new Set(parsed.chimeEnabled),
+        chimeSelect: parsed.chimeSelect || "default",
+        chimeVolume: parsed.chimeVolume || 1.0,
+        customChimes: parsed.customChimes || []
+      };
     }
+    this.state.initializedPermission = localStorage.getItem(this.PERMISSION_KEY) === "granted";
+    this.state.hasAudioPermission = this.state.initializedPermission;
   },
   
-  // 合并自定义铃声
   mergeCustomChimes() {
     this.state.customChimes.forEach(chime => {
       this.CHIME_CONFIG[chime.id] = chime.url;
     });
   },
   
-  // 创建设置界面（类名全部添加chime-前缀）
   createSettingsUI() {
     const container = $(`
       <div class="inline-drawer">
@@ -65,7 +65,7 @@ const ChimePlugin = {
               <div class="chime-volume-label"><label for="chime_volume">音量：</label><span id="volume_value" class="chime-volume-value">100%</span></div>
               <input type="range" id="chime_volume" class="chime-volume-slider" min="0" max="1" step="0.05" value="1">
             </div>
-            <div id="audio_permission_status" class="chime-permission-status chime-status-warning"></div>
+            <div id="audio_permission_status" class="chime-permission-status chime-status-info"></div>
           </div>
           <div class="chime-custom-audio">
             <div class="chime-section-header"><strong>自定义音频(beta)</strong></div>
@@ -94,13 +94,12 @@ const ChimePlugin = {
       select.append($("<option>").val(key).text(key === "default" ? "默认" : key === "doubao" ? "豆包" : key));
     });
 
-    // 初始化UI状态
     $("#chime_enabled").prop("checked", this.state.chimeEnabled.has("enabled"));
     $("#chime_select").val(this.state.chimeSelect);
     $("#chime_volume").val(this.state.chimeVolume);
     this.updateVolumeDisplay();
+    this.updatePermissionStatus();
 
-    // 绑定事件（使用命名空间事件，避免冲突）
     $("#chime_enabled").on("change.chime", this.onChimeEnabled.bind(this));
     $("#chime_select").on("change.chime", this.onChimeSelect.bind(this));
     $("#chime_test").on("click.chime", this.onChimeTest.bind(this));
@@ -109,9 +108,9 @@ const ChimePlugin = {
     $(document).on("click.chime", ".chime-remove-button", this.removeCustomAudio.bind(this));
   },
   
-  // 请求音频权限
   async requestAudioPermission() {
     if (this.state.hasAudioPermission) return true;
+    
     try {
       this.state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
       const buffer = this.state.audioContext.createBuffer(1, 1, 22050);
@@ -119,51 +118,36 @@ const ChimePlugin = {
       source.buffer = buffer;
       source.connect(this.state.audioContext.destination);
       await source.start(0);
+      
+      localStorage.setItem(this.PERMISSION_KEY, "granted");
       this.state.hasAudioPermission = true;
-      this.updatePermissionStatus("音频权限已获取", "success");
+      this.state.initializedPermission = true;
+      this.updatePermissionStatus("音频权限已获取，后续将自动播放", "success");
       return true;
     } catch (err) {
-      console.error("音频权限请求失败", err);
       this.updatePermissionStatus("请点击测试按钮启用声音", "warning");
       return false;
     }
   },
   
-  // 更新权限状态显示
-  updatePermissionStatus(msg, status) {
+  updatePermissionStatus(msg = "", type = "") {
     const el = $("#audio_permission_status");
+    if (!msg) {
+      el.text(this.state.initializedPermission 
+        ? "已获取音频权限，新消息将自动播放提醒" 
+        : "点击测试按钮获取音频权限以启用提醒");
+      el.removeClass("chime-status-success chime-status-warning chime-status-error chime-status-info");
+      el.addClass(this.state.initializedPermission ? "chime-status-success" : "chime-status-info");
+      return;
+    }
     el.text(msg);
-    el.removeClass("chime-status-success chime-status-warning chime-status-error");
-    el.addClass(`chime-status-${status}`);
+    el.removeClass("chime-status-success chime-status-warning chime-status-error chime-status-info");
+    el.addClass(`chime-status-${type}`);
   },
   
-  // 标记用户交互（仅监听自定义元素，避免全局事件）
-  markUserInteraction() {
-    if (!this.state.isUserInteracted) {
-      this.state.isUserInteracted = true;
-      this.requestAudioPermission().then(() => {
-        if (this.state.pendingPlayPromise) {
-          const play = this.state.pendingPlayPromise;
-          this.state.pendingPlayPromise = null;
-          play();
-        }
-      });
-    }
-  },
-  
-  // 播放铃声
   playChimeSound() {
-    if (!this.state.chimeEnabled.has("enabled")) return;
-    if (!this.state.hasAudioPermission && !this.state.isUserInteracted) {
-      this.state.pendingPlayPromise = this.playChimeSound.bind(this);
-      this.updatePermissionStatus("请与页面交互以启用声音", "warning");
-      return;
-    }
-    if (!this.state.hasAudioPermission) {
-      this.updatePermissionStatus("无音频权限", "error");
-      return;
-    }
-
+    if (!this.state.chimeEnabled.has("enabled") || !this.state.initializedPermission) return;
+    
     const url = this.CHIME_CONFIG[this.state.chimeSelect];
     if (!url) {
       this.updatePermissionStatus("音频URL无效", "error");
@@ -177,22 +161,18 @@ const ChimePlugin = {
     const btn = $("#chime_test");
     btn.addClass("animate-pulse");
 
-    this.state.audioElement.play().then(() => {
-      setTimeout(() => btn.removeClass("animate-pulse"), 500);
-    }).catch(err => {
+    this.state.audioElement.play().catch(err => {
       btn.removeClass("animate-pulse");
-      if (err.name === "NotAllowedError") {
-        this.updatePermissionStatus("请点击页面按钮启用声音", "warning");
-        this.markUserInteraction();
-      } else if (this.state.audioContext && this.state.audioContext.state === "suspended") {
+      if (this.state.audioContext && this.state.audioContext.state === "suspended") {
         this.state.audioContext.resume().then(() => this.state.audioElement.play());
       } else {
         this.updatePermissionStatus("播放失败，请检查浏览器设置", "error");
+        this.state.initializedPermission = false;
+        localStorage.removeItem(this.PERMISSION_KEY);
       }
     });
   },
   
-  // 音量更新
   updateVolumeDisplay() {
     const percent = Math.round(this.state.chimeVolume * 100);
     $("#volume_value").text(`${percent}%`);
@@ -201,7 +181,6 @@ const ChimePlugin = {
     slider.css("background", `linear-gradient(to right, var(--chime-accent) 0%, var(--chime-accent) ${value}%, var(--chime-bg-light) ${value}%, var(--chime-bg-light) 100%)`);
   },
   
-  // 事件处理函数（绑定到命名空间）
   onChimeEnabled(e) {
     e.target.checked ? this.state.chimeEnabled.add("enabled") : this.state.chimeEnabled.delete("enabled");
     this.saveSettings();
@@ -220,11 +199,15 @@ const ChimePlugin = {
   },
   
   onChimeTest() {
-    this.markUserInteraction();
-    this.playChimeSound();
+    if (!this.state.initializedPermission) {
+      this.requestAudioPermission().then(granted => {
+        if (granted) this.playChimeSound();
+      });
+    } else {
+      this.playChimeSound();
+    }
   },
   
-  // 自定义音频管理
   addCustomAudio() {
     const name = $("#custom_audio_name").val().trim();
     const url = $("#custom_audio_url").val().trim();
@@ -278,7 +261,6 @@ const ChimePlugin = {
     this.showNotification("音频已删除", "success");
   },
   
-  // 保存设置
   saveSettings() {
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify({
       chimeEnabled: Array.from(this.state.chimeEnabled),
@@ -289,7 +271,6 @@ const ChimePlugin = {
     saveSettingsDebounced();
   },
   
-  // 显示通知
   showNotification(msg, type) {
     const notify = $(`
       <div class="chime-notification chime-status-${type} fixed bottom-4 right-4 p-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 opacity-0 translate-y-4">
@@ -304,46 +285,22 @@ const ChimePlugin = {
     }, 3000);
   },
   
-  // 新消息处理
   handleNewMessageEvent() {
-    if (this.state.chimeEnabled.has("enabled")) {
-      if (this.state.hasAudioPermission && this.state.isUserInteracted) {
-        this.playChimeSound();
-      } else if (!this.state.isUserInteracted) {
-        this.state.pendingPlayPromise = this.playChimeSound.bind(this);
-        this.updatePermissionStatus("请与页面交互以启用声音提醒", "warning");
-      }
+    if (this.state.chimeEnabled.has("enabled") && this.state.initializedPermission) {
+      this.playChimeSound();
+    } else {
+      this.updatePermissionStatus();
     }
   },
   
-  // 初始化
   init() {
     this.initSettings();
     this.mergeCustomChimes();
     this.createSettingsUI();
-    
-    // 仅监听自定义UI的交互，避免全局事件
-    $(".chime-inline-drawer, .chime-toggle-checkbox, .chime-select, .chime-test-button")
-      .on("click mousedown touchstart.chimeInit", () => {
-        if (!this.state.isUserInteracted) {
-          this.state.isUserInteracted = true;
-          $(this).off("click mousedown touchstart.chimeInit");
-          this.requestAudioPermission().then(() => {
-            if (this.state.pendingPlayPromise) {
-              const play = this.state.pendingPlayPromise;
-              this.state.pendingPlayPromise = null;
-              play();
-            }
-          });
-        }
-      });
-    
-    // 事件源监听（确保事件类型唯一）
     eventSource.on(event_types.MESSAGE_RECEIVED, this.handleNewMessageEvent.bind(this));
   }
 };
 
-// 初始化插件（避免$符号冲突）
 jQuery(function($) {
   ChimePlugin.init();
 });
