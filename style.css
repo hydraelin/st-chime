@@ -1,326 +1,350 @@
-/* 基础颜色定义 */
+/* 基础颜色定义（确保变量名唯一） */
 :root {
-    --chime-bg-darker: #1F1F25;
-    --chime-bg-dark:#202025;
-    --chime-bg-light: #334155;
-    --chime-bg-lighter: #eaecee;
-    --chime-text-primary: #f8fafc;
-    --chime-text-secondary: #94a3b8;
-    --chime-accent: #4f46e5;
-    --chime-accent-hover: #6366f1;
-    --chime-success: #10b981;
-    --chime-warning: #f59e0b;
-    --chime-error: #ef4444;
-  }
-  
-  /* 主容器 */
-  .chime-container {
-    margin: 0;
-    padding: 0;
-    border-radius: 0.5rem;
-    background-color: var(--chime-bg-dark);
-    color: var(--chime-text-primary);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* 抽屉组件 */
-  .chime-drawer {
-    border-radius: 0.5rem;
-    overflow: hidden;
-    background-color: var(--chime-bg-darker);
-  }
-  
-  .chime-drawer-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    background-color: var(--chime-bg-light);
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .chime-drawer-header:hover {
-    background-color: #475569;
-  }
-  
-  .chime-drawer-icon {
-    transition: transform 0.2s;
-  }
-  
-  .chime-drawer-icon.down {
-    transform: rotate(0deg);
-  }
-  
-  .chime-drawer-icon.up {
-    transform: rotate(180deg);
-  }
-  
-  .chime-drawer-content {
-    padding: 0.5rem;
-    border-top: 1px solid var(--chime-bg-light);
-  }
-  
-  /* 开关切换 */
-  .chime-toggle-container {
-    margin-bottom: 0.5rem;
-  }
-  
-  .chime-toggle-label {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    cursor: pointer;
-    user-select: none;
-  }
-  
-  .chime-toggle-checkbox {
-    display: none;
-  }
-  
-  .chime-toggle-slider {
-    position: relative;
-    display: inline-block;
-    width: 1.5rem;
-    height: 1.5rem;
-    margin-right: 0.5rem;
-    background-color: var(--chime-bg-light);
-    border-radius: 9999px;
-    transition: background-color 0.2s;
-  }
-  
-  .chime-toggle-slider:before {
-    content: "";
-    position: absolute;
-    left: 0.25rem;
-    top: 0.25rem;
-    width: 1rem;
-    height: 0.5rem;
-    background-color: var(--chime-text-primary);
-    border-radius: 50%;
-    transition: transform 0.2s;
-  }
-  
-  .chime-toggle-checkbox:checked + .chime-toggle-slider {
-    background-color: var(--chime-accent);
-  }
-  
-  .chime-toggle-checkbox:checked + .chime-toggle-slider:before {
-    transform: translateX(1rem);
-  }
-  
-  /* 音频设置区域 */
-  .chime-audio-settings,
-  .chime-custom-audio {
-    margin-bottom: 0.5rem;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    background-color: var(--chime-bg-dark);
-    border: 1px solid var(--chime-bg-lighter);
-  }
-  
-  .chime-section-header {
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--chime-bg-light);
-    color: var(--chime-text-primary);
-  }
-  
-  .chime-select-container,
-  .chime-test-container,
-  .chime-volume-container {
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  /* 选择框 */
-  .chime-select {
-    padding: 0.5rem;
-    border: 1px solid var(--chime-bg-light);
-    border-radius: 0.5rem;
-    background-color: var(--chime-bg-darker);
-    color: var(--chime-text-primary);
-    font-size: 0.8rem;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  
-  .chime-select:focus {
-    border-color: var(--chime-accent);
-    box-shadow: 0 0 0 1px var(--chime-accent);
-  }
-  
-  /* 测试按钮 */
-  .chime-test-button {
-    padding: 0.25rem;
-    border: none;
-    border-radius: 0.5rem;
-    background-color: var(--chime-accent);
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    display: inline-flex;
-    align-items: center;
-  }
-  
-  .chime-test-button:hover {
-    background-color: var(--chime-accent-hover);
-  }
-  
-  .chime-test-button:active {
-    background-color: #4338ca;
-  }
+  --chime-bg-darker: #1F1F25;
+  --chime-bg-dark: #202025;
+  --chime-bg-light: #334155;
+  --chime-bg-lighter: #eaecee;
+  --chime-text-primary: #f8fafc;
+  --chime-text-secondary: #94a3b8;
+  --chime-accent: #4f46e5;
+  --chime-accent-hover: #6366f1;
+  --chime-success: #10b981;
+  --chime-warning: #f59e0b;
+  --chime-error: #ef4444;
+}
 
-  /* 音量滑块 */
-  .chime-volume-label {
-    display: flex;
-    align-items: center;
-  }
-  
-  .chime-volume-value {
-    margin-right: 0.5rem;
-    min-width: 2.5rem;
-    text-align: right;
-    color: var(--chime-text-secondary);
-  }
-  
-  /* 权限状态提示 */
-  .chime-permission-status {
-    margin-top: 0.5rem;
-    padding: 0.25rem;
-    border-radius: 0.5rem;
-    font-size: 0.8rem;
-  }
-  
-  .chime-status-success {
-    background-color: rgba(16, 185, 129, 0.1);
-    color: var(--chime-success);
-  }
-  
-  .chime-status-warning {
-    background-color: rgba(245, 158, 11, 0.1);
-    color: var(--chime-warning);
-  }
-  
-  .chime-status-error {
-    background-color: rgba(239, 68, 68, 0.1);
-    color: var(--chime-error);
-  }
-  
-  /* 自定义音频管理 */
-  .chime-add-audio {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .chime-audio-input {
-    flex: 1;
-    min-width: 120px;
-    padding: 0.5rem;
-    border: 1px solid var(--chime-bg-light);
-    border-radius: 0.5rem;
-    background-color: var(--chime-bg-darker);
-    color: var(--chime-text-primary);
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  
-  .chime-audio-input:focus {
-    border-color: var(--chime-accent);
-  }
-  
-  .chime-add-button {
-    padding: 0.25rem;
-    border: none;
-    border-radius: 0.5rem;
-    background-color: var(--chime-accent);
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    display: inline-flex;
-    align-items: center;
-  }
-  
-  .chime-add-button:hover {
-    background-color: var(--chime-accent-hover);
-  }
-  
-  .chime-audio-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
+/* 主容器（添加明确前缀） */
+.chime-inline-drawer {
+  margin: 0;
+  padding: 0;
+  border-radius: 0.5rem;
+  background-color: var(--chime-bg-dark);
+  color: var(--chime-text-primary);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+.chime-inline-drawer-toggle,
+.chime-inline-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.chime-inline-drawer-icon {
+  transition: transform 0.3s;
+}
+
+.chime-inline-drawer-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.chime-inline-drawer.active .chime-inline-drawer-content {
+  max-height: 500px;
+  transition: max-height 0.3s ease-in;
+}
+
+.chime-inline-drawer.active .chime-inline-drawer-icon {
+  transform: rotate(180deg);
+}
+
+/* 开关切换 */
+.chime-toggle-container {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+}
+
+.chime-toggle-label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.chime-toggle-checkbox {
+  display: none;
+}
+
+.chime-toggle-slider {
+  position: relative;
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 0.5rem;
+  background-color: var(--chime-bg-light);
+  border-radius: 9999px;
+  transition: background-color 0.2s;
+}
+
+.chime-toggle-slider:before {
+  content: "";
+  position: absolute;
+  left: 0.25rem;
+  top: 0.25rem;
+  width: 1rem;
+  height: 0.5rem;
+  background-color: var(--chime-text-primary);
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.chime-toggle-checkbox:checked + .chime-toggle-slider {
+  background-color: var(--chime-accent);
+}
+
+.chime-toggle-checkbox:checked + .chime-toggle-slider:before {
+  transform: translateX(1rem);
+}
+
+/* 音频设置区域 */
+.chime-audio-settings,
+.chime-custom-audio {
+  margin: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background-color: var(--chime-bg-darker);
+  border: 1px solid var(--chime-bg-lighter);
+}
+
+.chime-section-header {
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--chime-bg-light);
+  color: var(--chime-text-primary);
+  font-weight: 600;
+}
+
+.chime-select-container,
+.chime-test-container,
+.chime-volume-container {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 选择框 */
+.chime-select {
+  padding: 0.5rem;
+  border: 1px solid var(--chime-bg-light);
+  border-radius: 0.5rem;
+  background-color: var(--chime-bg-darker);
+  color: var(--chime-text-primary);
+  font-size: 0.8rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.chime-select:focus {
+  border-color: var(--chime-accent);
+  box-shadow: 0 0 0 1px var(--chime-accent);
+}
+
+/* 测试按钮 */
+.chime-test-button {
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: var(--chime-accent);
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.chime-test-button:hover {
+  background-color: var(--chime-accent-hover);
+}
+
+.chime-test-button:active {
+  background-color: #4338ca;
+}
+
+/* 音量滑块 */
+.chime-volume-label {
+  display: flex;
+  align-items: center;
+}
+
+.chime-volume-value {
+  margin-right: 0.5rem;
+  min-width: 2.5rem;
+  text-align: right;
+  color: var(--chime-text-secondary);
+}
+
+.chime-volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 0.5rem;
+  border-radius: 0.25rem;
+  background: var(--chime-bg-light);
+  outline: none;
+}
+
+.chime-volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--chime-accent);
+  cursor: pointer;
+}
+
+.chime-volume-slider::-moz-range-thumb {
+  width: 1rem;
+  height: 1rem;
+  border: none;
+  border-radius: 50%;
+  background: var(--chime-accent);
+  cursor: pointer;
+}
+
+/* 权限状态提示 */
+.chime-permission-status {
+  margin-top: 0.5rem;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.chime-status-success {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--chime-success);
+}
+
+.chime-status-warning {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: var(--chime-warning);
+}
+
+.chime-status-error {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--chime-error);
+}
+
+/* 自定义音频管理 */
+.chime-add-audio {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.chime-audio-input {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.5rem;
+  border: 1px solid var(--chime-bg-light);
+  border-radius: 0.5rem;
+  background-color: var(--chime-bg-darker);
+  color: var(--chime-text-primary);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.chime-audio-input:focus {
+  border-color: var(--chime-accent);
+}
+
+.chime-add-button {
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: var(--chime-accent);
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.chime-add-button:hover {
+  background-color: var(--chime-accent-hover);
+}
+
+.chime-audio-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.chime-audio-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background-color: var(--chime-bg-darker);
+  transition: background-color 0.2s;
+}
+
+.chime-audio-item:hover {
+  background-color: #1e293b;
+}
+
+.chime-audio-name {
+  font-weight: 500;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chime-audio-url {
+  flex: 1;
+  margin: 0 0.5rem;
+  color: var(--chime-text-secondary);
+  font-size: 0.8rem;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chime-remove-button {
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--chime-error);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.chime-remove-button:hover {
+  background-color: rgba(239, 68, 68, 0.2);
+}
+
+/* 响应式调整 */
+@media (max-width: 640px) {
+  .chime-select-container,
+  .chime-volume-container,
   .chime-audio-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    background-color: var(--chime-bg-darker);
-    transition: background-color 0.2s;
+    flex-direction: column;
+    align-items: flex-start;
   }
   
-  .chime-audio-item:hover {
-    background-color: #1e293b;
-  }
-  
-  .chime-audio-name {
-    font-weight: 500;
-    max-width: 100px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  .chime-select,
+  .chime-volume-slider {
+    width: 100%;
+    margin-top: 0.5rem;
   }
   
   .chime-audio-url {
-    flex: 1;
-    margin: 0 0.5rem;
-    color: var(--chime-text-secondary);
-    font-size: 0.8rem;
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    margin: 0.25rem 0;
+    max-width: 100%;
   }
-  
-  .chime-remove-button {
-    padding: 0.25rem;
-    border: none;
-    border-radius: 0.5rem;
-    background-color: rgba(239, 68, 68, 0.1);
-    color: var(--chime-error);
-    cursor: pointer;
-    transition: background-color 0.2s;
-    display: inline-flex;
-    align-items: center;
-    font-size: 0.8rem;
-  }
-  
-  .chime-remove-button:hover {
-    background-color: rgba(239, 68, 68, 0.2);
-  }
-  
-  /* 响应式调整 */
-  @media (max-width: 640px) {
-    .chime-select-container,
-    .chime-volume-container,
-    .chime-audio-item {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    
-    .chime-select,
-    .chime-volume-slider {
-      width: 100%;
-      margin-top: 0.5rem;
-    }
-    
-    .chime-audio-url {
-      margin: 0.25rem 0;
-      max-width: 100%;
-    }
-  }    
+}
